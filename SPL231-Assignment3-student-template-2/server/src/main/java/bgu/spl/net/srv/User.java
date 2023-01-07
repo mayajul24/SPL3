@@ -1,5 +1,4 @@
 package bgu.spl.net.srv;
-import java.util.List;
 import java.util.LinkedList;
 
 public class User {
