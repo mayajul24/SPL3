@@ -42,14 +42,18 @@ public class StompProtocol implements MessagingProtocol<String> {
         {
             body = body + msg.charAt(i);
         }
-        Frame frame  = new Frame(command, headers, body);
-        return frame.handleFrame();
+        Frame frame  = createFrame(command,headers,body);
+        frame.handleFrame();
     }
 
 
     @Override
     public boolean shouldTerminate() {
         return shouldTerminate;
+    }
+    public Frame createFrame(String command,HashMap<String,String> headers,String body)
+    {
+
     }
 
 }
