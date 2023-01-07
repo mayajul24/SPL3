@@ -15,7 +15,7 @@ public class ConnectFrame extends Frame {
     }
     public String handleFrame()
     {
-
+        
     }
     public boolean isValid()
     {

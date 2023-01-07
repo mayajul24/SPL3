@@ -43,7 +43,7 @@ public class StompProtocol implements MessagingProtocol<String> {
             body = body + msg.charAt(i);
         }
         Frame frame  = createFrame(command,headers,body);
-        frame.handleFrame();
+        return frame.handleFrame();
     }
 
 
@@ -69,7 +69,7 @@ public class StompProtocol implements MessagingProtocol<String> {
         {
             return new UnsubscribeFrame(command, headers, body);
         }
-        if(command.equals("SEND"))
+        else
         {
             return new SendFrame(command, headers, body);
         }

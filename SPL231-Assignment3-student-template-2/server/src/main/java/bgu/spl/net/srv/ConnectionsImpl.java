@@ -1,8 +1,10 @@
 package bgu.spl.net.srv;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class ConnectionsImpl<T> implements Connections<T>{
     private LinkedList<ConnectionHandler<T>> connectionHandlers;
+    private HashMap<String,String> users;
 
     public ConnectionsImpl(){
         connectionHandlers = new LinkedList<ConnectionHandler<T>>();
