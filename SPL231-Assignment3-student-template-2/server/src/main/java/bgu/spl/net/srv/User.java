@@ -7,13 +7,13 @@ public class User {
     private String password;
     private int connectionId;
     private int id;
-    private List<Topic> topics;
+    private LinkedList<Topic> topics;
 
     public User(String userName, String password, int connectionId, int id){
-        userName = userName;
-        password = password;
-        connectionId = connectionId;
-        id = id;
+        this.userName = userName;
+        this.password = password;
+        this.connectionId = connectionId;
+        this.id = id;
         topics = new LinkedList<Topic>();
     }
 
@@ -31,11 +31,9 @@ public class User {
 
     public int getId(){
         return id;
-
-    
     }
 
-    public List getTopics(){
+    public LinkedList<Topic> getTopics(){
         return topics;
     }
 
