@@ -5,6 +5,7 @@ import java.util.LinkedList;
 public class ConnectionsImpl<T> implements Connections<T>{
     private LinkedList<ConnectionHandler<T>> connectionHandlers;
     private HashMap<String,String> users;
+    private LinkedList<Topic> topics;
 
     public ConnectionsImpl(){
         connectionHandlers = new LinkedList<ConnectionHandler<T>>();
