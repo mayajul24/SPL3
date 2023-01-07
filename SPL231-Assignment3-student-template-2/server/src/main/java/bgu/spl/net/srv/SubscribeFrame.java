@@ -15,7 +15,9 @@ public class SubscribeFrame extends Frame {
     }
     public String handleFrame()
     {
-
+        if(!ConnectionsImpl.getTopics.contains(headers.get("destination"))){
+            return false;
+        }
     }
     public boolean isValid()
     {

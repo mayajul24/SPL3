@@ -43,7 +43,7 @@ public class ConnectFrame extends Frame {
     }
     public String createReplayFrame()
     {
-
+        return "CONNECTED" + "\n" + "version:1.2" + "\n" + "" + "^@"; 
     }
 
     public boolean checkLogin(){

@@ -31,7 +31,7 @@ public class DisconnectFrame extends Frame {
     }
     public String createReplayFrame()
     {
-
+        return "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" + "^@";
     }
     
 }
