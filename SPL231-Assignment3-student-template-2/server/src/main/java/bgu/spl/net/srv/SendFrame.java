@@ -19,7 +19,9 @@ public class SendFrame extends Frame {
     }
     public boolean isValid()
     {
-
+        if(headers.get(123) != "1.2"){
+            return false;
+        }
     }
     public String createError()
     {

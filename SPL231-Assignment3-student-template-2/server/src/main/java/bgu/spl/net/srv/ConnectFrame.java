@@ -19,6 +19,16 @@ public class ConnectFrame extends Frame {
     }
     public boolean isValid()
     {
+        if(headers.get("version") != "1.2"){
+            return false;
+        }
+        if(headers.get("body") != ""){
+            return false;
+        }
+        if(headers.get("host") != "stomp.bgu.ac.il"){
+            return false;
+        }
+
 
     }
     public String createError()
