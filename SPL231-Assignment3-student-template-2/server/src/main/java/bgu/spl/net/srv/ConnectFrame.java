@@ -13,5 +13,21 @@ public class ConnectFrame extends Frame {
         this.headers = headers;
         this.body = body;
     }
+    public String handleFrame()
+    {
+
+    }
+    public boolean isValid()
+    {
+
+    }
+    public String createError()
+    {
+
+    }
+    public String createReplayFrame()
+    {
+
+    }
     
 }
