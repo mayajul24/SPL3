@@ -27,5 +27,13 @@ public class ConnectionsImpl<T> implements Connections<T>{
     void disconnect(int connectionId){
 
     }
+
+    public LinkedList<Topic> getTopics(){
+        return topics;
+    }
+
+    public HashMap<String, String> getUsers(){
+        return users;
+    }
     
 }

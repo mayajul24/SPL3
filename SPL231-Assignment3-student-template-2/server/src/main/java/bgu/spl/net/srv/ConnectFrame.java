@@ -28,6 +28,12 @@ public class ConnectFrame extends Frame {
         if(headers.get("host") != "stomp.bgu.ac.il"){
             return false;
         }
+        if(!checkLogin()){
+            //TODO(NOA): create a incorrectPasswordError;
+            return false;
+        }
+
+        return true;
 
 
     }
@@ -39,5 +45,23 @@ public class ConnectFrame extends Frame {
     {
 
     }
+
+    public boolean checkLogin(){
+        //TODO(NOA): find a way to get connectionsimpl
+        if(ConnectionsImpl.getUsers.contains(headers.get("username"))){
+            if(headers.get("password" == ConnectionsImpl.getUsers.get("username"))){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        else{
+            //TODO(NOA): add the user to connectionsimpl
+            return true;
+        }
+        
+    }
+    
     
 }
