@@ -1,4 +1,5 @@
 package bgu.spl.net.srv;
+import bgu.spl.net.srv.ConnectionsImpl;
 
 import java.util.HashMap;
 
@@ -29,7 +30,7 @@ public class ConnectFrame extends Frame {
             return false;
         }
         if(!checkLogin()){
-            //TODO(NOA): create a incorrectPasswordError;
+            //TODO(NOA): create an incorrectPasswordError;
             return false;
         }
 
@@ -43,12 +44,12 @@ public class ConnectFrame extends Frame {
     }
     public String createReplayFrame()
     {
-        return "CONNECTED" + "\n" + "version:1.2" + "\n" + "" + "^@"; 
+        return "CONNECTED" + "\n" + "version:1.2" + "\n" + "" + "\u0000"; 
     }
 
     public boolean checkLogin(){
         //TODO(NOA): find a way to get connectionsimpl
-        if(ConnectionsImpl.getUsers.contains(headers.get("username"))){
+        if(ConnectionsImpl.getUsers().contains(headers.get("login"))){
             if(headers.get("password" == ConnectionsImpl.getUsers.get("username"))){
                 return true;
             }

@@ -3,8 +3,9 @@ package bgu.spl.net.srv;
 import java.util.HashMap;
 
 import bgu.spl.net.api.MessagingProtocol;
+import bgu.spl.net.api.StompMessagingProtocol;
 
-public class StompProtocol implements MessagingProtocol<String> {
+public class StompProtocol implements StompMessagingProtocol<String> {
     private boolean shouldTerminate = false;
 
     @Override
@@ -46,6 +47,10 @@ public class StompProtocol implements MessagingProtocol<String> {
         return frame.handleFrame();
     }
 
+    @Override
+    void start(int connectionId, Connections<T> connections){
+        
+    }
 
     @Override
     public boolean shouldTerminate() {
