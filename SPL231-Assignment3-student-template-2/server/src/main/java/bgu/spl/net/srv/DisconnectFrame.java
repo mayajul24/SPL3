@@ -19,7 +19,8 @@ public class DisconnectFrame extends Frame {
     }
     public boolean isValid()
     {
-
+        return body.length()==0;
+        //receipt should be unique
     }
     public String createError()
     {
