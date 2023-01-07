@@ -19,6 +19,9 @@ public class DisconnectFrame extends Frame {
     }
     public boolean isValid()
     {
+        if(headers.get("receipt") == "0"){
+            //TODO(NOA): is there an apropriate receipt
+        }
         return body.length()==0;
         //receipt should be unique
     }
