@@ -39,15 +39,14 @@ public class ConnectFrame extends Frame {
         if(!checkPasscode(connections)){
             return "Incorrect passcode";
         }
-        
-        return "CONNECTED" + "\n" + "version:1.2" + "\n" + "" + "\u0000"; 
+        return "CONNECTED" + "\n" + "version:1.2" + "\n" + "" + "\n" + "\u0000"; 
     }   
 
     public String createError(String error){
         String receipt = "";
 
         if(headers.containsKey("receipt")){
-            receipt = "receipt-id: massege-" + headers.get("receipt") +"\n";
+            receipt = "receipt-id: message-" + headers.get("receipt") +"\n";
         }
             
         return "ERROR" + "\n" + receipt +
