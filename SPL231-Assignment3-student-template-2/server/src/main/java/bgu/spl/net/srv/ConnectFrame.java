@@ -14,9 +14,10 @@ public class ConnectFrame extends Frame {
         this.headers = headers;
         this.body = body;
     }
-    public String handleFrame()
+    @Override
+    public String handleFrame(ConnectionsImpl<String> connections)
     {
-        
+        return "";
     }
     public boolean isValid()
     {
@@ -47,10 +48,9 @@ public class ConnectFrame extends Frame {
         return "CONNECTED" + "\n" + "version:1.2" + "\n" + "" + "\u0000"; 
     }
 
-    public boolean checkLogin(){
-        //TODO(NOA): find a way to get connectionsimpl
-        if(ConnectionsImpl.getUsers().contains(headers.get("login"))){
-            if(headers.get("password" == ConnectionsImpl.getUsers.get("username"))){
+    public boolean checkLogin(ConnectionsImpl<String> connections){
+        if(connections.getUsers().containsKey(headers.get("login"))){
+            if(headers.get("passcode") == connections.getUsers().get(headers.get("login"))){
                 return true;
             }
             else{
