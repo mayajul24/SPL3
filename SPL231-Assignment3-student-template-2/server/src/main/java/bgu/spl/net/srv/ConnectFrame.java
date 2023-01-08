@@ -7,14 +7,14 @@ public class ConnectFrame extends Frame {
     private String command;
     private HashMap<String, String> headers;
     private String body;
-    private String originalFrame;
+    private String originalMessage;
 
     public ConnectFrame(String command,HashMap<String,String> headers,String body, String originalFrame)
     {
         this.command = command;
         this.headers = headers;
         this.body = body;
-        this.originalFrame = originalFrame;
+        this.originalMessage = originalFrame;
     }
     @Override
     public String handleFrame(ConnectionsImpl<String> connections)
@@ -52,7 +52,7 @@ public class ConnectFrame extends Frame {
             
         return "ERROR" + "\n" + receipt +
         "message: malformed frame received\n" + "\n The message:" + "\n" + "----" + 
-        "\n" + originalFrame + "\n" + "----" + "\n" + error + "\n" + "\u0000";
+        "\n" + originalMessage + "\n" + "----" + "\n" + error + "\n" + "\u0000";
         
     }
 
@@ -75,6 +75,5 @@ public class ConnectFrame extends Frame {
         }
         
     }
-    
-    
+     
 }
