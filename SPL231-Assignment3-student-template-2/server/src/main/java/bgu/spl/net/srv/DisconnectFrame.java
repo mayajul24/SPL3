@@ -20,6 +20,7 @@ public class DisconnectFrame extends Frame {
         if(!headers.containsKey("receipt")){
             return createError("frame doesn't contain receipt");
         }
+        
         if(body.length()!=0)
         {
             return createError("body should be empty");
