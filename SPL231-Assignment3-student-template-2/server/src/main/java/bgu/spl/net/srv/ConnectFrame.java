@@ -38,7 +38,7 @@ public class ConnectFrame extends Frame {
             //TODO(NOA): create an incorrectPasswordError;
             return "";
         }
-        return "CONNECTED" + "\n" + "version:1.2" + "\n" + "" + "\u0000"; 
+        return "CONNECTED" + "\n" + "version:1.2" + "\n" + "" + "\n" + "\u0000"; 
     }   
 
     public boolean checkPasscode(ConnectionsImpl<String> connections){

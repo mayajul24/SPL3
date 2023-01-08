@@ -6,32 +6,33 @@ public class DisconnectFrame extends Frame {
     private String command;
     private HashMap<String, String> headers;
     private String body;
+    private String originalFrame;
 
-    public DisconnectFrame(String command,HashMap<String,String> headers,String body)
+    public DisconnectFrame(String command,HashMap<String,String> headers,String body, String originalFrame)
     {
         this.command = command;
         this.headers = headers;
         this.body = body;
+        this.originalFrame = originalFrame;
     }
     public String handleFrame(ConnectionsImpl<String> connections)
     {
-        return "";
-    }
-    public boolean isValid()
-    {
-        if(headers.get("receipt") == "0"){
-            //TODO(NOA): is there an apropriate receipt
+        if(!headers.containsKey("receipt")){
+            return createError("frame doesn't contain receipt");
         }
-        return body.length()==0;
-        //receipt should be unique
+        if(body.length()!=0)
+        {
+            return createError("body should be empty");
+        }
+        return "RECEIPT\\nreceipt-id:" + headers.get("receipt") + "\n" + "\n"+"\u0000";
     }
-    public String createError()
+    public String createError(String error)
     {
-
+        
     }
     public String createReplayFrame()
     {
-        return "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" + "^@";
+        return "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" + "\u0000";
     }
     
 }
