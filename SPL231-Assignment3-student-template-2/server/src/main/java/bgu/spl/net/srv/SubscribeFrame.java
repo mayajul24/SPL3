@@ -15,13 +15,16 @@ public class SubscribeFrame extends Frame {
     }
     public String handleFrame()
     {
-        if(!ConnectionsImpl.getTopics.contains(headers.get("destination"))){
-            return false;
-        }
+
     }
     public boolean isValid()
     {
-
+        if(!ConnectionsImpl.getTopics.contains(headers.get("destination"))){
+            return false;
+        }
+        if(headers.get("body") != ""){
+            return false;
+        }
     }
     public String createError()
     {
