@@ -45,11 +45,11 @@ public class ConnectFrame extends Frame {
         String receipt = "";
 
         if(headers.containsKey("receipt")){
-            receipt = "receipt-id: massege-" + headers.get("receipt");
+            receipt = "receipt-id: massege-" + headers.get("receipt") +"\n";
         }
             
-        return "ERROR" + "\n" + receipt + "\n" +
-        "massege: malformed frame received\n" + "\n The messege:" + "\n" + "----" + 
+        return "ERROR" + "\n" + receipt +
+        "message: malformed frame received\n" + "\n The message:" + "\n" + "----" + 
         "\n" + originalFrame + "\n" + "----" + "\n" + error + "\n" + "\u0000";
         
     }
