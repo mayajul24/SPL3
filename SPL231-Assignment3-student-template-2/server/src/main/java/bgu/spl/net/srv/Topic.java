@@ -4,19 +4,19 @@ import java.util.LinkedList;
 
 public class Topic {
     private String name;
-    private LinkedList<User> users;
+    private LinkedList<Integer> connectionIDs;
 
-    public Topic(String name, LinkedList<User> users)
+    public Topic(String name, LinkedList<Integer> connectionIDs)
     {
         this.name = name;
-        this.users = users;
+        this.connectionIDs = connectionIDs;
     }
     public String getName()
     {
         return name;
     }
-    public LinkedList<User> getUsers()
+    public LinkedList<Integer> getConnectionIDs()
     {
-        return users;
+        return connectionIDs;
     }
 }

@@ -5,13 +5,13 @@ import java.util.HashMap;
 import bgu.spl.net.api.MessagingProtocol;
 import bgu.spl.net.api.StompMessagingProtocol;
 
-public class StompProtocol<T> implements StompMessagingProtocol<T> {
+public class StompProtocol implements StompMessagingProtocol<String> {
     private boolean shouldTerminate = false;
     private int connectionID;
     private ConnectionsImpl<String> connections;
 
     @Override
-    public String process(String msg) {
+    public void process(String msg) {
         String command = "";
         HashMap<String, String> headers = new HashMap<String, String>();
         int i = 0;
@@ -46,7 +46,7 @@ public class StompProtocol<T> implements StompMessagingProtocol<T> {
             body = body + msg.charAt(i);
         }
         Frame frame  = createFrame(command,headers,body,msg);
-        return frame.handleFrame(connections);
+        connections.send(connectionID,frame.handleFrame(connections));
     }
 
     @Override
