@@ -13,9 +13,9 @@ public class SendFrame extends Frame {
         this.headers = headers;
         this.body = body;
     }
-    public String handleFrame()
+    public String handleFrame(ConnectionsImpl<String> connections)
     {
-
+        return "";
     }
     public boolean isValid()
     {

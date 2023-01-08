@@ -2,6 +2,8 @@ package bgu.spl.net.srv;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
 import bgu.spl.net.api.MessagingProtocol;
+import bgu.spl.net.api.StompMessagingProtocol;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -27,6 +29,8 @@ public abstract class BaseServer<T> implements Server<T> {
 
     @Override
     public void serve() {
+        int connectionID = 0;
+        ConnectionsImpl<String> connections = new ConnectionsImpl<String>();
 
         try (ServerSocket serverSock = new ServerSocket(port)) {
 			System.out.println("Server started");
@@ -42,6 +46,12 @@ public abstract class BaseServer<T> implements Server<T> {
                         encdecFactory.get(),
                         protocolFactory.get());
 
+                if(handler.getProtocol() instanceof StompMessagingProtocol)
+                {
+                    StompProtocol stompProtocol = (StompProtocol) handler.getProtocol();
+                    stompProtocol.start(connectionID, connections);
+                }
+                
                 execute(handler);
             }
         } catch (IOException ex) {
