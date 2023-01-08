@@ -24,10 +24,13 @@ public class DisconnectFrame extends Frame {
         {
             return createError("body should be empty");
         }
-        return "RECEIPT\\nreceipt-id:" + headers.get("receipt") + "\n" + "\n"+"\u0000";
+        return createReplayFrame();
     }
     public String createError(String error)
     {
+        return "ERROR" + "\n"  +
+        "message: malformed frame received\n" + "\n The message:" + "\n" + "----" + 
+        "\n" + originalFrame + "\n" + "----" + "\n" + error + "\n" + "\u0000";
         
     }
     public String createReplayFrame()

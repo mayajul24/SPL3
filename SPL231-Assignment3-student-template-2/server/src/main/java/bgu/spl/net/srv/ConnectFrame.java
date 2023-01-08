@@ -45,7 +45,7 @@ public class ConnectFrame extends Frame {
         String receipt = "";
 
         if(headers.containsKey("receipt")){
-            receipt = "receipt-id: massege-" + headers.get("receipt") +"\n";
+            receipt = "receipt-id: message-" + headers.get("receipt") +"\n";
         }
             
         return "ERROR" + "\n" + receipt +
