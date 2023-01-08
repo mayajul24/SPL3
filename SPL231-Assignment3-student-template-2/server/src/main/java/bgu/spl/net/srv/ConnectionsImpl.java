@@ -53,5 +53,9 @@ public class ConnectionsImpl<T> implements Connections<T>{
     public LinkedList<String> getConnectedUsers(){
         return connectedUsers;
     }
+
+    public HashMap<String,Topic> getNameToTopic(){
+        return nameToTopic;
+    }
     
 }
