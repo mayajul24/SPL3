@@ -18,6 +18,10 @@ public class SubscribeFrame extends Frame {
     public String handleFrame(ConnectionsImpl<String> connections)
     {
         String receipt = "";
+        if(!headers.containsKey("destination"))
+        {
+            return createError("Frame doesn't contain destination");
+        }
         if(!headers.containsKey("receipt"))
         {
             return createError("Frame doesn't contain receipt");
@@ -32,10 +36,6 @@ public class SubscribeFrame extends Frame {
         }
 
         return createReplayFrame();
-    }
-    public boolean isValid()
-    {
-        
     }
     public String createError(String error)
     {
