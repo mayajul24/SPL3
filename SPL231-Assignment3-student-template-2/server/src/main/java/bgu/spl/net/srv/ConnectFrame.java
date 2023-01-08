@@ -41,6 +41,19 @@ public class ConnectFrame extends Frame {
         return "CONNECTED" + "\n" + "version:1.2" + "\n" + "" + "\u0000"; 
     }   
 
+    public String createError(String error){
+        String receipt = "";
+
+        if(headers.containsKey("receipt")){
+            receipt = "receipt-id: massege-" + headers.get("receipt");
+        }
+            
+        return "ERROR" + "\n" + receipt + "\n" +
+        "massege: malformed frame received\n" + "\n The messege:" + "\n" + "----" + 
+        "\n" + originalFrame + "\n" + "----" + "\n" + error + "\n" + "\u0000";
+        
+    }
+
     public boolean checkPasscode(ConnectionsImpl<String> connections){
         if(connections.getUsersToPasscode().containsKey(headers.get("login"))){
             if(headers.get("passcode") == connections.getUsersToPasscode().get(headers.get("login")))
