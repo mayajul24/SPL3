@@ -7,58 +7,55 @@ public class ConnectFrame extends Frame {
     private String command;
     private HashMap<String, String> headers;
     private String body;
+    private String originalFrame;
 
-    public ConnectFrame(String command,HashMap<String,String> headers,String body)
+    public ConnectFrame(String command,HashMap<String,String> headers,String body, String originalFrame)
     {
         this.command = command;
         this.headers = headers;
         this.body = body;
+        this.originalFrame = originalFrame;
     }
     @Override
     public String handleFrame(ConnectionsImpl<String> connections)
     {
-        return "";
-    }
-    public boolean isValid()
-    {
+        if(!headers.containsKey("host"))
+        {
+            return "";
+        }
+        if(connections.getConnectionHandlers().contains(connections))
+        
         if(headers.get("version") != "1.2"){
-            return false;
+            return "";
         }
         if(headers.get("body") != ""){
-            return false;
+            return "";
         }
         if(headers.get("host") != "stomp.bgu.ac.il"){
-            return false;
+            return "";
         }
-        if(!checkLogin()){
+        if(!checkPasscode(connections)){
             //TODO(NOA): create an incorrectPasswordError;
-            return false;
+            return "";
         }
-
-        return true;
-
-
-    }
-    public String createError()
-    {
-
-    }
-    public String createReplayFrame()
-    {
         return "CONNECTED" + "\n" + "version:1.2" + "\n" + "" + "\u0000"; 
-    }
+    }   
 
-    public boolean checkLogin(ConnectionsImpl<String> connections){
-        if(connections.getUsers().containsKey(headers.get("login"))){
-            if(headers.get("passcode") == connections.getUsers().get(headers.get("login"))){
-                return true;
+    public boolean checkPasscode(ConnectionsImpl<String> connections){
+        if(connections.getUsersToPasscode().containsKey(headers.get("login"))){
+            if(headers.get("passcode") == connections.getUsersToPasscode().get(headers.get("login")))
+            {
+                 return true;
             }
-            else{
+            else
+            {
                 return false;
             }
         }
-        else{
-            //TODO(NOA): add the user to connectionsimpl
+        else 
+        {
+            //Add new user to connections
+            connections.getUsersToPasscode().put(headers.get("login"),headers.get("passcode"));
             return true;
         }
         

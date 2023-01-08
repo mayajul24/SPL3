@@ -4,8 +4,10 @@ import java.util.LinkedList;
 
 public class ConnectionsImpl<T> implements Connections<T>{
     private LinkedList<ConnectionHandler<T>> connectionHandlers;
-    private HashMap<String,String> users;
+    private HashMap<String,String> usersToPasscode;
+    private HashMap<String,String> usersToConnectionID;
     private LinkedList<Topic> topics;
+
 
     public ConnectionsImpl(){
         connectionHandlers = new LinkedList<ConnectionHandler<T>>();
@@ -32,8 +34,12 @@ public class ConnectionsImpl<T> implements Connections<T>{
         return topics;
     }
 
-    public HashMap<String, String> getUsers(){
-        return users;
+    public HashMap<String, String> getUsersToPasscode(){
+        return usersToPasscode;
+    }
+    public HashMap<String,String> getUsersToConnectionID()
+    {
+        return usersToConnectionID;
     }
     
 }
