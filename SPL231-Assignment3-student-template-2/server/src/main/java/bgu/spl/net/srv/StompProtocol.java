@@ -71,7 +71,7 @@ public class StompProtocol implements StompMessagingProtocol<String> {
         }
         else
         {
-            return new SendFrame(command, headers, body);
+            return new SendFrame(command, headers, body,msg);
         }
     }
 
