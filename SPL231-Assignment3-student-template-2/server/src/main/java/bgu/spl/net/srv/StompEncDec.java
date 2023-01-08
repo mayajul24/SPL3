@@ -17,7 +17,7 @@ public class StompEncDec implements MessageEncoderDecoder<String> {
         }
 
         pushByte(nextByte);
-        return null; //not a line yet
+        return null; 
     }
     @Override
     public byte[] encode(String message) {
