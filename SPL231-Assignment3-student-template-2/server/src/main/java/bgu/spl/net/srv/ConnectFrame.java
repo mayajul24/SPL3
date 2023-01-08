@@ -21,23 +21,25 @@ public class ConnectFrame extends Frame {
     {
         if(!headers.containsKey("host"))
         {
-            return "";
+            return createError("Frame should contain host header");
         }
-        if(connections.getConnectionHandlers().contains(connections))
+        if(connections.getConnectedUsers().contains(headers.get("login"))){
+            return createError("User already connected");
+        }
         
         if(headers.get("version") != "1.2"){
-            return "";
+            return createError("Incorrect frame version");
         }
         if(headers.get("body") != ""){
-            return "";
+            return createError("Frame body should be empty");
         }
         if(headers.get("host") != "stomp.bgu.ac.il"){
-            return "";
+            return createError("Host name incorrect");
         }
         if(!checkPasscode(connections)){
-            //TODO(NOA): create an incorrectPasswordError;
-            return "";
+            return "Incorrect passcode";
         }
+        
         return "CONNECTED" + "\n" + "version:1.2" + "\n" + "" + "\u0000"; 
     }   
 
