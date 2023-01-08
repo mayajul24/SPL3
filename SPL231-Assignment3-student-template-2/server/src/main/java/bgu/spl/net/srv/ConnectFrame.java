@@ -39,6 +39,7 @@ public class ConnectFrame extends Frame {
         if(!checkPasscode(connections)){
             return "Incorrect passcode";
         }
+
         return "CONNECTED" + "\n" + "version:1.2" + "\n" + "" + "\n" + "\u0000"; 
     }   
 
