@@ -16,6 +16,7 @@ public class DisconnectFrame extends Frame {
         this.body = body;
         this.originalFrame = originalFrame;
     }
+    
     public void handleFrame(ConnectionsImpl<String> connections, ConnectionHandler<String>handler,int connectionId)
     {
         String error = lookForErrors();
@@ -33,9 +34,7 @@ public class DisconnectFrame extends Frame {
                 }
             }
             connections.getConnectionIdToUsername().remove(connectionId);
-    }
-
-        
+    }  
         else
         {
             connections.send(connectionId,error);
@@ -65,6 +64,4 @@ public class DisconnectFrame extends Frame {
         }
         return error;
     }
-
-    
 }

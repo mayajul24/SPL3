@@ -15,13 +15,23 @@ public class UnsubscribeFrame extends Frame {
         this.body = body;
         this.originalMessage = originalMessage;
     }
-    public String handleFrame(ConnectionsImpl<String> connections, ConnectionHandler<String>handler,int connectionId)
+    public void handleFrame(ConnectionsImpl<String> connections, ConnectionHandler<String>handler,int connectionId)
     {
-        String receipt = "";
-        if(!headers.containsKey("receipt"))
+        String error = lookForErrors();
+        if(error.length()==0)
         {
-            return createError("Frame doesn't contain receipt");
+            if(headers.containsKey("receipt")){
+                String receipt = "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" +"\n"+ "\u0000";
+                connections.send(connectionId,receipt);
+            }
         }
+        else{
+            connections.send(connectionId, error);
+        }
+    }
+    public String lookForErrors()
+    {
+        String error="";
         if(!headers.containsKey("id"))
         {
             return createError("Frame doesn't contain id");
@@ -30,10 +40,9 @@ public class UnsubscribeFrame extends Frame {
         {
             return createError("body should be empty");
         }
-
-        return createReplayFrame();
+        return error;
     }
-    
+   
     public String createError(String error)
     {
         String receipt = "";
@@ -45,10 +54,5 @@ public class UnsubscribeFrame extends Frame {
         "message: malformed frame received\n" + "\n The message:" + "\n" + "----" + 
         "\n" + originalMessage + "\n" + "----" + "\n" + error + "\n" + "\u0000";
         
-    }
-    public String createReplayFrame()
-    {
-
-        return "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" + "\u0000";
     }
 }

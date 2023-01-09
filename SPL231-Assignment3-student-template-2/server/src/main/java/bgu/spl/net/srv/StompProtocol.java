@@ -78,7 +78,7 @@ public class StompProtocol implements StompMessagingProtocol<String> {
         {
             return new UnsubscribeFrame(command, headers, body,msg);
         }
-        if(command.equals("SEND")
+        if(command.equals("SEND"))
         {
             return new SendFrame(command, headers, body,msg);
         }

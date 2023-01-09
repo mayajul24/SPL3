@@ -10,7 +10,6 @@ public class ConnectionsImpl<T> implements Connections<T>{
     private HashMap<Integer,String> connectionIdToUsername;
 
     public ConnectionsImpl(){
-        //TODO: maintain the users to connection handler
         this.usersToPasscode = new HashMap<String,String>();
         this.connectedUsers = new LinkedList<String>();
         this.connectionIDToConnectionHandler = new HashMap<Integer,ConnectionHandler<T>>();
