@@ -42,7 +42,7 @@ public class ConnectionsImpl<T> implements Connections<T>{
     }
 
     public void disconnect(int connectionId){
-
+        
     }
 
 
@@ -57,5 +57,7 @@ public class ConnectionsImpl<T> implements Connections<T>{
     public HashMap<String,Topic> getNameToTopic(){
         return nameToTopic;
     }
-    
+    public HashMap<Integer,ConnectionHandler<T>> getConnectionIdToConnectionHandler(){
+        return connectionIDToConnectionHandler;
+    }
 }

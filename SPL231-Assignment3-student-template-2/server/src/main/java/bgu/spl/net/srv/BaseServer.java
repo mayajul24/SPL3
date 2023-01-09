@@ -12,13 +12,13 @@ import java.util.function.Supplier;
 public abstract class BaseServer<T> implements Server<T> {
 
     private final int port;
-    private final Supplier<StompMessagingProtocol<T>> protocolFactory;
+    private final Supplier<MessagingProtocol<T>> protocolFactory;
     private final Supplier<MessageEncoderDecoder<T>> encdecFactory;
     private ServerSocket sock;
 
     public BaseServer(
             int port,
-            Supplier<StompMessagingProtocol<T>> protocolFactory,
+            Supplier<MessagingProtocol<T>> protocolFactory,
             Supplier<MessageEncoderDecoder<T>> encdecFactory) {
 
         this.port = port;
@@ -49,9 +49,9 @@ public abstract class BaseServer<T> implements Server<T> {
                 if(handler.getProtocol() instanceof StompMessagingProtocol)
                 {
                     StompProtocol stompProtocol = (StompProtocol) handler.getProtocol();
-                    stompProtocol.start(connectionID, connections);
+                    stompProtocol.start(connectionID, connections,(ConnectionHandler<String>)handler);
                 }
-                
+                connectionID++;
                 execute(handler);
             }
         } catch (IOException ex) {

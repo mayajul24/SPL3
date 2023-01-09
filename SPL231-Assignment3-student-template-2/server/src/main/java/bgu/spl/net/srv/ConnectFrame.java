@@ -15,32 +15,21 @@ public class ConnectFrame extends Frame {
         this.headers = headers;
         this.body = body;
         this.originalMessage = originalFrame;
+        
     }
     @Override
     public String handleFrame(ConnectionsImpl<String> connections)
     {
-        if(!headers.containsKey("host"))
+        String error = lookForErrors(connections);
+        if(error.length()==0)
         {
-            return createError("Frame should contain host header");
+            connections.getConnectedUsers().add(headers.get("login"));
+            return "CONNECTED" + "\n" + "version:1.2" + "\n" + "" + "\n" + "\u0000";
         }
-        if(connections.getConnectedUsers().contains(headers.get("login"))){
-            return createError("User already connected");
+        else{
+            return error;
         }
-        
-        if(headers.get("version") != "1.2"){
-            return createError("Incorrect frame version");
-        }
-        if(headers.get("body") != ""){
-            return createError("Frame body should be empty");
-        }
-        if(headers.get("host") != "stomp.bgu.ac.il"){
-            return createError("Host name incorrect");
-        }
-        if(!checkPasscode(connections)){
-            return "Incorrect passcode";
-        }
-
-        return "CONNECTED" + "\n" + "version:1.2" + "\n" + "" + "\n" + "\u0000"; 
+         
     }   
 
     public String createError(String error){
@@ -75,5 +64,43 @@ public class ConnectFrame extends Frame {
         }
         
     }
-     
+    public String lookForErrors(ConnectionsImpl<String> connections)
+    {
+        String error = "";
+        if(!headers.containsKey("accept-version"))
+        {
+            return createError("Frame should contain accept-version header");
+        }
+        if(!headers.containsKey("host"))
+        {
+            return createError("Frame should contain host header");
+        }
+        if(!headers.containsKey("login"))
+        {
+            return createError("Frame should contain login header");
+        }
+        if(!headers.containsKey("passcoden"))
+        {
+            return createError("Frame should contain passcode header");
+        }
+        if(connections.getConnectedUsers().contains(headers.get("login"))){
+            return createError("User already connected");
+        }
+    
+        if(headers.get("accept-version") != "1.2"){
+            return createError("Incorrect frame version");
+        }
+        if(headers.get("host") != "stomp.bgu.ac.il"){
+            return createError("Host name incorrect");
+        }
+        if(headers.get("body") != ""){
+            return createError("Frame body should be empty");
+        }
+        
+        if(!checkPasscode(connections)){
+            return createError("Incorrect passcode");
+        }
+
+        return error;
+    } 
 }

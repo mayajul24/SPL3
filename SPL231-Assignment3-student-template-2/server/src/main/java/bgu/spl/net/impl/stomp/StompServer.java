@@ -10,7 +10,7 @@ public class StompServer<T> implements Server<T> {
     public static void main(String[] args) {
         // TODO: implement this
         
-        if(args[1] == "TPC")
+        if(args[1] == "tpc")
         {
                 Server.threadPerClient(
                 7777, //port

@@ -1,5 +1,4 @@
 package bgu.spl.net.srv;
-
 import java.util.HashMap;
 
 public class SendFrame extends Frame {
