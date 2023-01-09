@@ -2,6 +2,8 @@ package bgu.spl.net.srv;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
 import bgu.spl.net.api.MessagingProtocol;
+import bgu.spl.net.api.StompMessagingProtocol;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.ClosedSelectorException;
@@ -9,6 +11,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.sql.Connection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Supplier;
 
@@ -61,7 +64,7 @@ public class Reactor<T> implements Server<T> {
                     if (!key.isValid()) {
                         continue;
                     } else if (key.isAcceptable()) {
-                        handleAccept(serverSock, selector);
+                        handleAccept(serverSock, selector,connectionID,connections);
                     } else {
                         handleReadWrite(key);
                     }
@@ -94,7 +97,7 @@ public class Reactor<T> implements Server<T> {
         }
     }
 
-    private void handleAccept(ServerSocketChannel serverChan, Selector selector) throws IOException {
+    private void handleAccept(ServerSocketChannel serverChan, Selector selector, int connectionID, Connections<String>connections) throws IOException {
         SocketChannel clientChan = serverChan.accept();
         clientChan.configureBlocking(false);
         final NonBlockingConnectionHandler<T> handler = new NonBlockingConnectionHandler<>(
@@ -102,6 +105,12 @@ public class Reactor<T> implements Server<T> {
                 protocolFactory.get(),
                 clientChan,
                 this);
+                if(handler.getProtocol() instanceof StompMessagingProtocol)
+                {
+                    StompProtocol stompProtocol = (StompProtocol) handler.getProtocol();
+                    stompProtocol.start(connectionID, connections,(ConnectionHandler<String>)handler);
+                }
+                connectionID++;
         clientChan.register(selector, SelectionKey.OP_READ, handler);
     }
 

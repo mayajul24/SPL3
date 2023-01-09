@@ -52,7 +52,9 @@ public class StompProtocol implements StompMessagingProtocol<String> {
                 shouldTerminate = true;
             }
         }
-        else{
+        
+        else
+        {
             String error = "ERROR" + "\n"  +
             "message: malformed frame received\n" + "\n The message:" + "\n" + "----" + 
             "\n" + msg + "\n" + "----" + "\n" + "Command is not defined" + "\n" + "\u0000";
