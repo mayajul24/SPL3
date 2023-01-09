@@ -1,5 +1,4 @@
 package bgu.spl.net.srv;
-
 import java.util.HashMap;
 
 public class UnsubscribeFrame extends Frame {
@@ -27,12 +26,13 @@ public class UnsubscribeFrame extends Frame {
         }
         else{
             connections.send(connectionId, error);
+            connections.disconnect(connectionId);
         }
     }
     public String lookForErrors()
     {
         String error="";
-        if(!headers.containsKey("id") && headers.get("id") == null)
+        if(!headers.containsKey("id") && headers.get("id") == "")
         {
             return createError("Frame doesn't contain id");
         }

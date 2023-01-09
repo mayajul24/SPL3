@@ -33,6 +33,7 @@ public class ConnectFrame extends Frame {
         else
         {
             connections.send(connectionId,error);
+            connections.disconnect(connectionId);
         }
          
     }   
