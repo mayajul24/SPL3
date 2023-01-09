@@ -54,9 +54,9 @@ public class SubscribeFrame extends Frame {
         {
             return createError("Frame doesn't contain destination");
         }
-        if(connections.getNameToTopic().containsKey(headers.))
+        if(!connections.getNameToTopic().containsKey(headers.get("destination")))
         {
-
+            return createError("topic doesn't exist");
         }
         // if(!headers.containsKey("receipt"))
         // {
