@@ -39,7 +39,17 @@ public class ConnectionsImpl<T> implements Connections<T>{
     }
 
     public void disconnect(int connectionId){
-        
+        String username = connectionIdToUsername.get(connectionId);
+            connectedUsers.remove(username);
+            connectionIDToConnectionHandler.remove(connectionId);
+            for (HashMap.Entry<String,Topic> entry : nameToTopic.entrySet()) 
+            {
+                Topic currentTopic = entry.getValue();
+                if(currentTopic.getConnectionIDs().contains(connectionId)){
+                    currentTopic.getConnectionIDs().remove(connectionId);
+                }
+            }
+            connectionIdToUsername.remove(connectionId);
     }
 
     public HashMap<String, String> getUsersToPasscode(){

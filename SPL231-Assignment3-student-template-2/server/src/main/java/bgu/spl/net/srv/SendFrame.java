@@ -14,13 +14,20 @@ public class SendFrame extends Frame {
         this.body = body;
         this.originalMessage = originalMessage;
     }
-    public String handleFrame(ConnectionsImpl<String> connections, ConnectionHandler<String>handler,int connectionId)
+    public void handleFrame(ConnectionsImpl<String> connections, ConnectionHandler<String>handler,int connectionId)
     {
-        if(!headers.containsKey("destination"))
+        String error = lookForErrors(connections);
+        if(error.length()==0)
         {
-            return createError("Frame doesn't contain destination");
+            connections.send(connectionId, "");
         }
-        return createReplayFrame();
+        else
+        {
+            connections.send(connectionId, error);
+            connections.disconnect(connectionId);
+        }
+        
+        
     }
     
     public String createError(String error)
@@ -37,5 +44,15 @@ public class SendFrame extends Frame {
     public String createReplayFrame()
     {
         return "";
-    }  
+    } 
+    
+    public String lookForErrors(ConnectionsImpl<String> connections)
+    {
+        String error = "";
+        if(!headers.containsKey("destination"))
+        {
+            return createError("Frame doesn't contain destination");
+        }
+        return error;
+    }
 }

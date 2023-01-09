@@ -31,6 +31,7 @@ public class SubscribeFrame extends Frame {
         else
         {
             connections.send(connectionId, error);
+            connections.disconnect(connectionId);
         }
 
     }
