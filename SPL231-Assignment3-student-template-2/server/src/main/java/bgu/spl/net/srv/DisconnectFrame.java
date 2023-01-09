@@ -16,7 +16,7 @@ public class DisconnectFrame extends Frame {
         this.originalFrame = originalFrame;
     }
     
-    public void handleFrame(ConnectionsImpl<String> connections, ConnectionHandler<String>handler,int connectionId)
+    public boolean handleFrame(ConnectionsImpl<String> connections, ConnectionHandler<String>handler,int connectionId)
     {
         String error = lookForErrors();
         if(error.length()==0)
@@ -29,6 +29,7 @@ public class DisconnectFrame extends Frame {
             connections.send(connectionId,error);
             connections.disconnect(connectionId);
         }
+        return true;
     }
     public String createError(String error)
     {

@@ -14,7 +14,7 @@ public class ConnectFrame extends Frame {
     }
 
     @Override
-    public void handleFrame(ConnectionsImpl<String> connections, ConnectionHandler<String>handler,int connectionId)
+    public boolean handleFrame(ConnectionsImpl<String> connections, ConnectionHandler<String>handler,int connectionId)
     {
         String error = lookForErrors(connections);
         if(error.length()==0)
@@ -29,11 +29,13 @@ public class ConnectFrame extends Frame {
                 String receipt = "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" +"\n"+ "\u0000";
                 connections.send(connectionId,receipt);
             }
+            return true;
         }
         else
         {
             connections.send(connectionId,error);
             connections.disconnect(connectionId);
+            return false;
         }
          
     }   

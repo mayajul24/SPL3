@@ -14,19 +14,23 @@ public class UnsubscribeFrame extends Frame {
         this.body = body;
         this.originalMessage = originalMessage;
     }
-    public void handleFrame(ConnectionsImpl<String> connections, ConnectionHandler<String>handler,int connectionId)
+    public boolean handleFrame(ConnectionsImpl<String> connections, ConnectionHandler<String>handler,int connectionId)
     {
         String error = lookForErrors();
         if(error.length()==0)
         {
-            if(headers.containsKey("receipt")){
+            if(headers.containsKey("receipt"))
+            {
                 String receipt = "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" +"\n"+ "\u0000";
                 connections.send(connectionId,receipt);
             }
+            return true;
         }
-        else{
+        else
+        {
             connections.send(connectionId, error);
             connections.disconnect(connectionId);
+            return false;
         }
     }
     public String lookForErrors()
