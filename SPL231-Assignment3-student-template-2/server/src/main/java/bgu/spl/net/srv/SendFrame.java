@@ -28,8 +28,7 @@ public class SendFrame extends Frame {
             connections.disconnect(connectionId);
         }  
             return false;
-        }
-    }
+    }   
     
     public String createError(String error)
     {  
