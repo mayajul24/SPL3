@@ -14,20 +14,20 @@ public class SendFrame extends Frame {
         this.body = body;
         this.originalMessage = originalMessage;
     }
-    public void handleFrame(ConnectionsImpl<String> connections, ConnectionHandler<String>handler,int connectionId)
+    public boolean handleFrame(ConnectionsImpl<String> connections, ConnectionHandler<String>handler,int connectionId)
     {
-        String error = lookForErrors(connections);
+        String error = lookForErrors(connections, connectionId);
         if(error.length()==0)
         {
             connections.send(connectionId, "");
+            return true;
         }
         else
         {
             connections.send(connectionId, error);
             connections.disconnect(connectionId);
+            return false;
         }
-        
-        
     }
     
     public String createError(String error)
@@ -46,13 +46,32 @@ public class SendFrame extends Frame {
         return "";
     } 
     
-    public String lookForErrors(ConnectionsImpl<String> connections)
+    public String lookForErrors(ConnectionsImpl<String> connections, int connectionId)
     {
         String error = "";
         if(!headers.containsKey("destination"))
         {
             return createError("Frame doesn't contain destination");
         }
+        String currentTopic = getTopic(headers.get("destenation"));
+        if(!connections.getNameToTopic().get(currentTopic).getConnectionIDs().contains(connectionId))
+        {
+            return createError("User not subsctibed to Topic");
+        }
         return error;
+    }
+
+    public String getTopic(String destenation){
+        String topic = "";
+        int index = destenation.length()-1; 
+        char currentChar = destenation.charAt(index);
+        while(currentChar != '/' && index >= 0)
+        {
+            topic = currentChar + topic;
+            index--;
+            currentChar = destenation.charAt(index);
+
+        }
+        return topic;
     }
 }
