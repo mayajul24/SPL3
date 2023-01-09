@@ -32,7 +32,7 @@ public class UnsubscribeFrame extends Frame {
     public String lookForErrors()
     {
         String error="";
-        if(!headers.containsKey("id"))
+        if(!headers.containsKey("id") && headers.get("id") == null)
         {
             return createError("Frame doesn't contain id");
         }

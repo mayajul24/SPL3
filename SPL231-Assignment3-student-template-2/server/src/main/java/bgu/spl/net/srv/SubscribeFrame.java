@@ -22,7 +22,7 @@ public class SubscribeFrame extends Frame {
         {
           Topic toSubscribe = connections.getNameToTopic().get(headers.get("destination"));
           toSubscribe.getConnectionIDs().add(connectionId);
-          if(headers.containsKey("receipt") && headers.get("receipt") != null)
+          if(headers.containsKey("receipt") && headers.get("receipt") == null)
           {
             String receipt = "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" +"\n"+ "\u0000";;
             connections.send(connectionId,receipt);
