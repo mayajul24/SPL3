@@ -25,9 +25,7 @@ public class SendFrame extends Frame {
         {
             connections.send(connectionId, error);
             connections.disconnect(connectionId);
-        }
-        
-        
+        }  
     }
     
     public String createError(String error)
