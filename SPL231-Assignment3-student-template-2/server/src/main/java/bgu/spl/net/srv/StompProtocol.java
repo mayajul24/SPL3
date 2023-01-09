@@ -44,8 +44,16 @@ public class StompProtocol implements StompMessagingProtocol<String> {
             body = body + msg.charAt(i);
         }
         Frame frame  = createFrame(command,headers,body,msg);
-        connections.send(connectionID,frame.handleFrame(connections));
-        //check receipt
+        if(frame!=null)
+        {
+            frame.handleFrame(connections,handler,connectionID);
+        }
+        else{
+            String error = "ERROR" + "\n"  +
+            "message: malformed frame received\n" + "\n The message:" + "\n" + "----" + 
+            "\n" + msg + "\n" + "----" + "\n" + "Command is not defined" + "\n" + "\u0000";
+            connections.send(connectionID, error);
+        }
     }
 
     @Override
@@ -70,9 +78,13 @@ public class StompProtocol implements StompMessagingProtocol<String> {
         {
             return new UnsubscribeFrame(command, headers, body,msg);
         }
-        else
+        if(command.equals("SEND")
         {
             return new SendFrame(command, headers, body,msg);
+        }
+        else
+        {
+            return null;
         }
     }
 

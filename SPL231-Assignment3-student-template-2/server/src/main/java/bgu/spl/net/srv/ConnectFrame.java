@@ -2,34 +2,40 @@ package bgu.spl.net.srv;
 import java.util.HashMap;
 
 public class ConnectFrame extends Frame {
-    private String command;
     private HashMap<String, String> headers;
     private String body;
     private String originalMessage;
 
     public ConnectFrame(String command,HashMap<String,String> headers,String body, String originalFrame)
     {
-        this.command = command;
         this.headers = headers;
         this.body = body;
         this.originalMessage = originalFrame;
-        
     }
+
     @Override
-    public String handleFrame(ConnectionsImpl<String> connections)
+    public void handleFrame(ConnectionsImpl<String> connections, ConnectionHandler<String>handler,int connectionId)
     {
         String error = lookForErrors(connections);
         if(error.length()==0)
         {
-            connections.getConnectedUsers().add(headers.get("login"));
-            return "CONNECTED" + "\n" + "version:1.2" + "\n" + "" + "\n" + "\u0000";
+            String username = headers.get("login");
+            connections.getConnectedUsers().add(username);
+            connections.getConnectionIdToConnectionHandler().put(connectionId, handler);
+            connections.getConnectionIdToUsername().put(connectionId, username);
+            
+            connections.send(connectionId,"CONNECTED" + "\n" + "version:1.2" + "\n" + "" + "\n" + "\u0000");
+            if(headers.containsKey("receipt")){
+                String receipt = "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" +"\n"+ "\u0000";
+                connections.send(connectionId,receipt);
+            }
         }
-        else{
-            return error;
+        else
+        {
+            connections.send(connectionId,error);
         }
          
     }   
-
     public String createError(String error){
         String receipt = "";
 
@@ -42,7 +48,6 @@ public class ConnectFrame extends Frame {
         "\n" + originalMessage + "\n" + "----" + "\n" + error + "\n" + "\u0000";
         
     }
-
     public boolean checkPasscode(ConnectionsImpl<String> connections){
         if(connections.getUsersToPasscode().containsKey(headers.get("login"))){
             if(headers.get("passcode") == connections.getUsersToPasscode().get(headers.get("login")))
@@ -91,14 +96,13 @@ public class ConnectFrame extends Frame {
         if(headers.get("host") != "stomp.bgu.ac.il"){
             return createError("Host name incorrect");
         }
-        if(headers.get("body") != ""){
+        if(body != ""){
             return createError("Frame body should be empty");
         }
         
         if(!checkPasscode(connections)){
             return createError("Incorrect passcode");
         }
-
         return error;
     } 
 }

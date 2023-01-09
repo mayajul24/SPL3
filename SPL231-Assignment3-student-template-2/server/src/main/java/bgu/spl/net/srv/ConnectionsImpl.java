@@ -3,21 +3,19 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class ConnectionsImpl<T> implements Connections<T>{
-    private LinkedList<ConnectionHandler<T>> connectionHandlers;
     private HashMap<String,String> usersToPasscode;
     private LinkedList<String> connectedUsers;
     private HashMap<Integer,ConnectionHandler<T>> connectionIDToConnectionHandler;
     private HashMap<String,Topic> nameToTopic;
-
+    private HashMap<Integer,String> connectionIdToUsername;
 
     public ConnectionsImpl(){
         //TODO: maintain the users to connection handler
-        connectionHandlers = new LinkedList<ConnectionHandler<T>>();
+        this.usersToPasscode = new HashMap<String,String>();
         this.connectedUsers = new LinkedList<String>();
-    }
-
-    public LinkedList<ConnectionHandler<T>> getConnectionHandlers(){
-        return connectionHandlers;
+        this.connectionIDToConnectionHandler = new HashMap<Integer,ConnectionHandler<T>>();
+        this.nameToTopic = new HashMap<String,Topic>();
+        this.connectionIdToUsername = new HashMap<Integer,String>();
     }
 
     public boolean send(int connectionId, T msg){
@@ -45,7 +43,6 @@ public class ConnectionsImpl<T> implements Connections<T>{
         
     }
 
-
     public HashMap<String, String> getUsersToPasscode(){
         return usersToPasscode;
     }
@@ -59,5 +56,9 @@ public class ConnectionsImpl<T> implements Connections<T>{
     }
     public HashMap<Integer,ConnectionHandler<T>> getConnectionIdToConnectionHandler(){
         return connectionIDToConnectionHandler;
+    }
+    public HashMap<Integer,String> getConnectionIdToUsername()
+    {
+        return connectionIdToUsername;
     }
 }

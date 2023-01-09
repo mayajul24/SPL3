@@ -15,7 +15,7 @@ public class SubscribeFrame extends Frame {
         this.body = body;
         this.originalMessage = originalMessage;
     }
-    public String handleFrame(ConnectionsImpl<String> connections)
+    public String handleFrame(ConnectionsImpl<String> connections, ConnectionHandler<String>handler,int connectionId)
     {
         String receipt = "";
         if(!headers.containsKey("destination"))

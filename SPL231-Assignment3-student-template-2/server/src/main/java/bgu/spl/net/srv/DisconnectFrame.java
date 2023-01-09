@@ -15,33 +15,37 @@ public class DisconnectFrame extends Frame {
         this.body = body;
         this.originalFrame = originalFrame;
     }
-    public String handleFrame(ConnectionsImpl<String> connections)
+    public void handleFrame(ConnectionsImpl<String> connections, ConnectionHandler<String>handler,int connectionId)
     {
         String error = lookForErrors();
         if(error.length()==0)
         {
-            return createReplayFrame();
+            connections.send(connectionId, createReplayFrame());
+            String username = connections.getConnectionIdToUsername().get(connectionId);
+            connections.getConnectedUsers().remove(username);
+            connections.getConnectionIdToConnectionHandler().remove(connectionId);
+            for(Topic topic:connections.getNameToTopic())
         }
         else
         {
-            return error;
+            connections.send(connectionId,error);
         }
     }
     public String createError(String error)
     {
         return "ERROR" + "\n"  +
         "message: malformed frame received\n" + "\n The message:" + "\n" + "----" + 
-        "\n" + originalFrame + "\n" + "----" + "\n" + error + "\n" + "\u0000";
-        
+        "\n" + originalFrame + "\n" + "----" + "\n" + error + "\n" + "\u0000"; 
     }
     public String createReplayFrame()
     {
-        return "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" + "\u0000";
+        return "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" +"\n"+ "\u0000";
     }
     public String lookForErrors()
     {
         String error="";
-        if(!headers.containsKey("receipt")){
+        if(!headers.containsKey("receipt") || headers.get("receipt")!="")
+        {
             return createError("frame doesn't contain receipt");
         }
         
