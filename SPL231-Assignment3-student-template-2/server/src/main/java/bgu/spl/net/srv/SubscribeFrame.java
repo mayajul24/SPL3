@@ -20,11 +20,17 @@ public class SubscribeFrame extends Frame {
         String error = lookForErrors(connections);
         if(error.length() == 0)
         {
-
+          Topic toSubscribe = connections.getNameToTopic().get(headers.get("destination"));
+          toSubscribe.getConnectionIDs().add(connectionId);
+          if(headers.containsKey("receipt") && headers.get("receipt") != null)
+          {
+            String receipt = "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" +"\n"+ "\u0000";;
+            connections.send(connectionId,receipt);
+          }
         }
         else
         {
-
+            connections.send(connectionId, error);
         }
 
     }
@@ -65,6 +71,10 @@ public class SubscribeFrame extends Frame {
         if(!headers.containsKey("id"))
         {
             return createError("Frame doesn't contain id");
+        }
+        if(headers.get("id").length() == 0)
+        {
+            return createError("Invalid id");
         }
         if(body.length()!=0)
         {
