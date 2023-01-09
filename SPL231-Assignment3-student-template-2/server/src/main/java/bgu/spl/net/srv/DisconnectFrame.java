@@ -1,6 +1,7 @@
 package bgu.spl.net.srv;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class DisconnectFrame extends Frame {
     private String command;
@@ -24,8 +25,17 @@ public class DisconnectFrame extends Frame {
             String username = connections.getConnectionIdToUsername().get(connectionId);
             connections.getConnectedUsers().remove(username);
             connections.getConnectionIdToConnectionHandler().remove(connectionId);
-            for(Topic topic:connections.getNameToTopic())
-        }
+            for (Map.Entry<String,Topic> entry : connections.getNameToTopic().entrySet()) 
+            {
+                Topic currentTopic = entry.getValue();
+                if(currentTopic.getConnectionIDs().contains(connectionId)){
+                    currentTopic.getConnectionIDs().remove(connectionId);
+                }
+            }
+            connections.getConnectionIdToUsername().remove(connectionId);
+    }
+
+        
         else
         {
             connections.send(connectionId,error);
@@ -55,4 +65,6 @@ public class DisconnectFrame extends Frame {
         }
         return error;
     }
+
+    
 }

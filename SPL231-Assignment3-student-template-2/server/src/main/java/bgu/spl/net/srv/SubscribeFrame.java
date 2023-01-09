@@ -15,27 +15,18 @@ public class SubscribeFrame extends Frame {
         this.body = body;
         this.originalMessage = originalMessage;
     }
-    public String handleFrame(ConnectionsImpl<String> connections, ConnectionHandler<String>handler,int connectionId)
+    public void handleFrame(ConnectionsImpl<String> connections, ConnectionHandler<String>handler,int connectionId)
     {
-        String receipt = "";
-        if(!headers.containsKey("destination"))
+        String error = lookForErrors(connections);
+        if(error.length() == 0)
         {
-            return createError("Frame doesn't contain destination");
+
         }
-        if(!headers.containsKey("receipt"))
+        else
         {
-            return createError("Frame doesn't contain receipt");
-        }
-        if(!headers.containsKey("id"))
-        {
-            return createError("Frame doesn't contain id");
-        }
-        if(body.length()!=0)
-        {
-            return createError("body should be empty");
+
         }
 
-        return createReplayFrame();
     }
     public String createError(String error)
     {
@@ -51,7 +42,36 @@ public class SubscribeFrame extends Frame {
     }
     public String createReplayFrame()
     {   
-        return "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" + "\u0000";
+        String receipt = "";
+         if(headers.containsKey("receipt")){
+            receipt = "receipt-id:" + headers.get("receipt") + "\n";
+         }
+        return "RECEIPT" + "\n" + "receipt-id:" + receipt  + "" + "\n"+ "\u0000";
+    }
+
+    public String lookForErrors(ConnectionsImpl<String> connections){
+        if(!headers.containsKey("destination"))
+        {
+            return createError("Frame doesn't contain destination");
+        }
+        if(connections.getNameToTopic().containsKey(headers.))
+        {
+
+        }
+        // if(!headers.containsKey("receipt"))
+        // {
+        //     return createError("Frame doesn't contain receipt");
+        // }
+        if(!headers.containsKey("id"))
+        {
+            return createError("Frame doesn't contain id");
+        }
+        if(body.length()!=0)
+        {
+            return createError("body should be empty");
+        }
+
+        return "";
     }
     
 }
