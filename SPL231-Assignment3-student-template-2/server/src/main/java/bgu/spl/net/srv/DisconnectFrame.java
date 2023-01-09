@@ -17,15 +17,15 @@ public class DisconnectFrame extends Frame {
     }
     public String handleFrame(ConnectionsImpl<String> connections)
     {
-        if(!headers.containsKey("receipt")){
-            return createError("frame doesn't contain receipt");
-        }
-        
-        if(body.length()!=0)
+        String error = lookForErrors();
+        if(error.length()==0)
         {
-            return createError("body should be empty");
+            return createReplayFrame();
         }
-        return createReplayFrame();
+        else
+        {
+            return error;
+        }
     }
     public String createError(String error)
     {
@@ -38,5 +38,17 @@ public class DisconnectFrame extends Frame {
     {
         return "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" + "\u0000";
     }
-    
+    public String lookForErrors()
+    {
+        String error="";
+        if(!headers.containsKey("receipt")){
+            return createError("frame doesn't contain receipt");
+        }
+        
+        if(body.length()!=0)
+        {
+            return createError("body should be empty");
+        }
+        return error;
+    }
 }

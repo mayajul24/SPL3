@@ -1,6 +1,4 @@
 package bgu.spl.net.srv;
-import bgu.spl.net.srv.ConnectionsImpl;
-
 import java.util.HashMap;
 
 public class ConnectFrame extends Frame {
