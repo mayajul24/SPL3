@@ -1,22 +1,35 @@
 package bgu.spl.net.srv;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Topic {
     private String name;
-    private LinkedList<Integer> connectionIDs;
+    private HashMap<Integer,Integer> connectionIDsToSubsctiptionIDs;
 
-    public Topic(String name, LinkedList<Integer> connectionIDs)
+    public Topic(String name, int connectionID, int subsctiptionID)
     {
         this.name = name;
-        this.connectionIDs = connectionIDs;
+        this.connectionIDsToSubsctiptionIDs = new HashMap<>();
+        connectionIDsToSubsctiptionIDs.put(connectionID, subsctiptionID);
+
     }
     public String getName()
     {
         return name;
     }
-    public LinkedList<Integer> getConnectionIDs()
+    public HashMap<Integer,Integer> getConnectionIDs()
     {
-        return connectionIDs;
+        return connectionIDsToSubsctiptionIDs;
     }
-}
+
+    public void addSubscription(int connectionId, int subsctiptionID)
+    {
+        connectionIDsToSubsctiptionIDs.put(connectionId, subsctiptionID);
+    }
+
+    public void removeSubscription(int connectionID)
+    {
+        connectionIDsToSubsctiptionIDs.remove(connectionID);
+    }
+} 
