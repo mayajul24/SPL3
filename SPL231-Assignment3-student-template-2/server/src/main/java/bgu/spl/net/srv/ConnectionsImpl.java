@@ -25,7 +25,7 @@ public class ConnectionsImpl<T> implements Connections<T>{
     }
     public void send(String channel, T msg){
         Topic topic = nameToTopic.get(channel);
-        LinkedList<Integer> connectionIds = topic.getConnectionIDs();
+        HashMap<Integer,String> connectionIds = topic.getCon("ConnectionIDs");
         for(int i=0;i<connectionIds.size();i++)
         {
             send(connectionIds.get(i),msg);
