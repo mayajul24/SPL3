@@ -36,8 +36,7 @@ public class ConnectFrame extends Frame {
             connections.send(connectionId,error);
             connections.disconnect(connectionId);
             return false;
-        }
-         
+        }   
     }   
     public String createError(String error){
         String receipt = "";
