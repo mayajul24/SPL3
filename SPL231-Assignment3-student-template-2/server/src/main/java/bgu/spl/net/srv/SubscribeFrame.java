@@ -1,7 +1,7 @@
 package bgu.spl.net.srv;
 
 import java.util.HashMap;
-import java.util.LinkedList;
+
 
 public class SubscribeFrame extends Frame {
     private HashMap<String, String> headers;
@@ -15,8 +15,7 @@ public class SubscribeFrame extends Frame {
         this.originalMessage = originalMessage;
     }
     public boolean handleFrame(ConnectionsImpl<String> connections, ConnectionHandler<String>handler,int connectionId)
-    {
-        
+    {  
         String error = lookForErrors(connections);
         if(error.length() == 0)
         {
@@ -69,36 +68,22 @@ public class SubscribeFrame extends Frame {
     }
 
     public String lookForErrors(ConnectionsImpl<String> connections){
-        if(!headers.containsKey("destination"))
+        if(!headers.containsKey("destination")&&headers.get("destination")=="")
         {
             return createError("Frame doesn't contain destination");
-        }
-        if()
-        {
-            
         }
         if(!connections.getNameToTopic().containsKey(headers.get("destination")))
         {
             return createError("topic doesn't exist");
         }
-        // if(!headers.containsKey("receipt"))
-        // {
-        //     return createError("Frame doesn't contain receipt");
-        // }
-        if(!headers.containsKey("id"))
+        if(!headers.containsKey("id")&& headers.get("id").length() == 0)
         {
             return createError("Frame doesn't contain id");
-        }
-        if(headers.get("id").length() == 0)
-        {
-            return createError("Invalid id");
         }
         if(body.length()!=0)
         {
             return createError("body should be empty");
         }
-
         return "";
     }
-    
 }

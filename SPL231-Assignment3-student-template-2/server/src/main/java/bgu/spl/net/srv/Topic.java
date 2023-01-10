@@ -1,7 +1,6 @@
 package bgu.spl.net.srv;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class Topic {
     private String name;
@@ -31,5 +30,9 @@ public class Topic {
     public void removeSubscription(int connectionID)
     {
         connectionIDsToSubsctiptionIDs.remove(connectionID);
+    }
+    public HashMap<Integer,String> getConnectionIDsToSubsctiptionIDs()
+    {
+        return connectionIDsToSubsctiptionIDs;
     }
 } 

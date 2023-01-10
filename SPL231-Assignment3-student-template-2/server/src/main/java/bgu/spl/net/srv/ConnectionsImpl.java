@@ -1,6 +1,7 @@
 package bgu.spl.net.srv;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class ConnectionsImpl<T> implements Connections<T>{
     private HashMap<String,String> usersToPasscode;
@@ -25,10 +26,9 @@ public class ConnectionsImpl<T> implements Connections<T>{
     }
     public void send(String channel, T msg){
         Topic topic = nameToTopic.get(channel);
-        HashMap<Integer,String> connectionIds = topic.getCon("ConnectionIDs");
-        for(int i=0;i<connectionIds.size();i++)
-        {
-            send(connectionIds.get(i),msg);
+        HashMap<Integer,String> connectionIds = topic.getConnectionIDsToSubsctiptionIDs();
+        for(HashMap.Entry<Integer, String> entry : connectionIds.entrySet()){
+            send((int)entry.getKey(), msg);
         }
     }
     public void disconnect(int connectionId){
@@ -38,7 +38,7 @@ public class ConnectionsImpl<T> implements Connections<T>{
             for (HashMap.Entry<String,Topic> entry : nameToTopic.entrySet()) 
             {
                 Topic currentTopic = entry.getValue();
-                if(currentTopic.getConnectionIDs().contains(connectionId)){
+                if(currentTopic.getConnectionIDsToSubsctiptionIDs().containsKey(connectionId)){
                     currentTopic.getConnectionIDs().remove(connectionId);
                 }
             }

@@ -19,13 +19,12 @@ public class SendFrame extends Frame {
         String error = lookForErrors(connections, connectionId);
         if(error.length()==0)
         {
+            String topic = getTopicName(headers.get("destination"));
+            connections.send(topic, createMessageFrame(connections.getMessageID()));
             if(headers.containsKey("receipt")){
                 String receipt = "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" +"\n"+ "\u0000";
                 connections.send(connectionId,receipt);
             }
-
-            String topic = getTopicName(headers.get("destination"));
-            connections.send(topic, createMessageFrame(connections.getMessageID()));
             return true;
         }
         else
@@ -57,7 +56,7 @@ public class SendFrame extends Frame {
         }
         String currentTopic = getTopicName(headers.get("destination"));
         Topic topic = connections.getNameToTopic().get(currentTopic);
-        if(topic!=null && !topic.getConnectionIDs().contains(connectionId))
+        if(topic!=null && !topic.getConnectionIDs().containsKey("connectionId"))
         {
             return createError("User not subsctibed to Topic");
         }
