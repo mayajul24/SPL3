@@ -1,6 +1,7 @@
 package bgu.spl.net.srv;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class SubscribeFrame extends Frame {
     private String command;
@@ -17,11 +18,23 @@ public class SubscribeFrame extends Frame {
     }
     public boolean handleFrame(ConnectionsImpl<String> connections, ConnectionHandler<String>handler,int connectionId)
     {
+        
         String error = lookForErrors(connections);
         if(error.length() == 0)
         {
-          Topic toSubscribe = connections.getNameToTopic().get(headers.get("destination"));
-          toSubscribe.getConnectionIDs().add(connectionId);
+            String topicName = headers.get("destination");
+            Topic toSubscribe = connections.getNameToTopic().get(topicName);
+            if(toSubscribe == null)
+        {
+            LinkedList<Integer> usersList = new LinkedList<>();
+            usersList.add(connectionId);
+            toSubscribe = new Topic(topicName, usersList);
+            connections.getNameToTopic().put(topicName, toSubscribe);
+        }
+        else
+        {
+          toSubscribe.getConnectionIDs().add(connectionId); 
+        }
           if(headers.containsKey("receipt") && headers.get("receipt") == "")
           {
             String receipt = "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" +"\n"+ "\u0000";;
@@ -59,10 +72,6 @@ public class SubscribeFrame extends Frame {
     }
 
     public String lookForErrors(ConnectionsImpl<String> connections){
-        if(connections.getNameToTopic().containsKey(headers.get("destenation")))
-        {
-
-        }
         if(!headers.containsKey("destination"))
         {
             return createError("Frame doesn't contain destination");
