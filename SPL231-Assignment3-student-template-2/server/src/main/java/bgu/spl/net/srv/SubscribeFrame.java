@@ -4,14 +4,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class SubscribeFrame extends Frame {
-    private String command;
     private HashMap<String, String> headers;
     private String body;
     private String originalMessage;
 
     public SubscribeFrame(String command,HashMap<String,String> headers,String body,String originalMessage)
     {
-        this.command = command;
         this.headers = headers;
         this.body = body;
         this.originalMessage = originalMessage;
@@ -26,14 +24,13 @@ public class SubscribeFrame extends Frame {
             Topic toSubscribe = connections.getNameToTopic().get(topicName);
             if(toSubscribe == null)
         {
-            LinkedList<Integer> usersList = new LinkedList<>();
-            usersList.add(connectionId);
-            toSubscribe = new Topic(topicName, usersList);
+            toSubscribe = new Topic(topicName, connectionId,headers.get("id"));
             connections.getNameToTopic().put(topicName, toSubscribe);
+
         }
         else
         {
-          toSubscribe.getConnectionIDs().add(connectionId); 
+          toSubscribe.addSubscription(connectionId, headers.get("id")); 
         }
           if(headers.containsKey("receipt") && headers.get("receipt") == "")
           {
@@ -75,6 +72,10 @@ public class SubscribeFrame extends Frame {
         if(!headers.containsKey("destination"))
         {
             return createError("Frame doesn't contain destination");
+        }
+        if()
+        {
+            
         }
         if(!connections.getNameToTopic().containsKey(headers.get("destination")))
         {

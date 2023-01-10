@@ -5,9 +5,9 @@ import java.util.LinkedList;
 
 public class Topic {
     private String name;
-    private HashMap<Integer,Integer> connectionIDsToSubsctiptionIDs;
+    private HashMap<Integer,String> connectionIDsToSubsctiptionIDs;
 
-    public Topic(String name, int connectionID, int subsctiptionID)
+    public Topic(String name, int connectionID, String subsctiptionID)
     {
         this.name = name;
         this.connectionIDsToSubsctiptionIDs = new HashMap<>();
@@ -18,12 +18,12 @@ public class Topic {
     {
         return name;
     }
-    public HashMap<Integer,Integer> getConnectionIDs()
+    public HashMap<Integer,String> getConnectionIDs()
     {
         return connectionIDsToSubsctiptionIDs;
     }
 
-    public void addSubscription(int connectionId, int subsctiptionID)
+    public void addSubscription(int connectionId, String subsctiptionID)
     {
         connectionIDsToSubsctiptionIDs.put(connectionId, subsctiptionID);
     }
