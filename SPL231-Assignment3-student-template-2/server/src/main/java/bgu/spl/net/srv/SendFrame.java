@@ -19,7 +19,13 @@ public class SendFrame extends Frame {
         String error = lookForErrors(connections, connectionId);
         if(error.length()==0)
         {
-            connections.send(connectionId, "");
+            if(headers.containsKey("receipt")){
+                String receipt = "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" +"\n"+ "\u0000";
+                connections.send(connectionId,receipt);
+            }
+
+            String topic = getTopicName(headers.get("destination"));
+            connections.send(topic, createMessageFrame(connections.getMessageID()));
             return true;
         }
         else
@@ -41,10 +47,6 @@ public class SendFrame extends Frame {
         "message: malformed frame received\n" + "\n The message:" + "\n" + "----" + 
         "\n" + originalMessage + "\n" + "----" + "\n" + error + "\n" + "\u0000";
     }
-    public String createReplayFrame()
-    {
-        return "";
-    } 
     
     public String lookForErrors(ConnectionsImpl<String> connections, int connectionId)
     {
@@ -53,25 +55,30 @@ public class SendFrame extends Frame {
         {
             return createError("Frame doesn't contain destination");
         }
-        String currentTopic = getTopic(headers.get("destenation"));
-        if(!connections.getNameToTopic().get(currentTopic).getConnectionIDs().contains(connectionId))
+        String currentTopic = getTopicName(headers.get("destination"));
+        Topic topic = connections.getNameToTopic().get(currentTopic);
+        if(topic!=null && !topic.getConnectionIDs().contains(connectionId))
         {
             return createError("User not subsctibed to Topic");
         }
         return error;
     }
 
-    public String getTopic(String destenation){
+    public String getTopicName(String destination){
         String topic = "";
-        int index = destenation.length()-1; 
-        char currentChar = destenation.charAt(index);
+        int index = destination.length()-1; 
+        char currentChar = destination.charAt(index);
         while(currentChar != '/' && index >= 0)
         {
             topic = currentChar + topic;
             index--;
-            currentChar = destenation.charAt(index);
-
+            currentChar = destination.charAt(index);
         }
         return topic;
+    }
+
+    public String createMessageFrame(int messageID)
+    {
+        return "MESSAGE"+"\n"+"subscription"+headers.get("id")+"\n"+"message-id"+messageID;
     }
 }
