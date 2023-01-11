@@ -1,7 +1,6 @@
 package bgu.spl.net.srv;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
 public class ConnectionsImpl<T> implements Connections<T>{
     private HashMap<String,String> usersToPasscode;
@@ -39,7 +38,7 @@ public class ConnectionsImpl<T> implements Connections<T>{
             {
                 Topic currentTopic = entry.getValue();
                 if(currentTopic.getConnectionIDsToSubsctiptionIDs().containsKey(connectionId)){
-                    currentTopic.getConnectionIDs().remove(connectionId);
+                    currentTopic.getConnectionIDsToSubsctiptionIDs().remove(connectionId);
                 }
             }
             connectionIdToUsername.remove(connectionId);

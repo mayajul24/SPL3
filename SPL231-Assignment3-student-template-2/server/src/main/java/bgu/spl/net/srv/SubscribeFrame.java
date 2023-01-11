@@ -1,5 +1,4 @@
 package bgu.spl.net.srv;
-
 import java.util.HashMap;
 
 
@@ -22,21 +21,21 @@ public class SubscribeFrame extends Frame {
             String topicName = headers.get("destination");
             Topic toSubscribe = connections.getNameToTopic().get(topicName);
             if(toSubscribe == null)
-        {
-            toSubscribe = new Topic(topicName, connectionId,headers.get("id"));
-            connections.getNameToTopic().put(topicName, toSubscribe);
+            {
+                toSubscribe = new Topic(topicName, connectionId,headers.get("id"));
+                connections.getNameToTopic().put(topicName, toSubscribe);
 
-        }
-        else
-        {
-          toSubscribe.addSubscription(connectionId, headers.get("id")); 
-        }
-          if(headers.containsKey("receipt") && headers.get("receipt") == "")
-          {
-            String receipt = "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" +"\n"+ "\u0000";;
-            connections.send(connectionId,receipt);
-          }
-          return true;
+            }
+            else
+            {
+                toSubscribe.addSubscription(connectionId, headers.get("id")); 
+            }
+            if(headers.containsKey("receipt") && headers.get("receipt") == "")
+            {
+                String receipt = "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" +"\n"+ "\u0000";;
+                connections.send(connectionId,receipt);
+            }
+            return true;
         }
         else
         {

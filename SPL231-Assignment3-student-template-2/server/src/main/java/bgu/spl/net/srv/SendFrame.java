@@ -2,14 +2,12 @@ package bgu.spl.net.srv;
 import java.util.HashMap;
 
 public class SendFrame extends Frame {
-    private String command;
     private HashMap<String, String> headers;
     private String body;
     private String originalMessage;
 
     public SendFrame(String command,HashMap<String,String> headers,String body,String originalMessage)
     {
-        this.command = command;
         this.headers = headers;
         this.body = body;
         this.originalMessage = originalMessage;
@@ -23,7 +21,7 @@ public class SendFrame extends Frame {
             connections.send(topic, createMessageFrame(connections.getMessageID()));
             if(headers.containsKey("receipt")){
                 String receipt = "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" +"\n"+ "\u0000";
-                connections.send(connectionId,receipt);
+                connections.send(connectionId, receipt);
             }
             return true;
         }
@@ -31,8 +29,9 @@ public class SendFrame extends Frame {
         {
             connections.send(connectionId, error);
             connections.disconnect(connectionId);
-        }  
             return false;
+        }  
+            
     }   
     
     public String createError(String error)
@@ -56,9 +55,13 @@ public class SendFrame extends Frame {
         }
         String currentTopic = getTopicName(headers.get("destination"));
         Topic topic = connections.getNameToTopic().get(currentTopic);
-        if(topic!=null && !topic.getConnectionIDs().containsKey("connectionId"))
+        if(topic!=null && !topic.getConnectionIDsToSubsctiptionIDs().containsKey("connectionId"))
         {
             return createError("User not subsctibed to Topic");
+        }
+        if(body=="")
+        {
+            return createError("body shouldn't be empty");
         }
         return error;
     }
@@ -78,6 +81,7 @@ public class SendFrame extends Frame {
 
     public String createMessageFrame(int messageID)
     {
-        return "MESSAGE"+"\n"+"subscription"+headers.get("id")+"\n"+"message-id"+messageID;
+        return "MESSAGE"+"\n"+"subscription"+headers.get("id")+"\n"+"message-id"+messageID+"/n"+
+        "destination:/topic/"+getTopicName(headers.get("destination"))+"/n"+"/n"+body;
     }
 }

@@ -17,10 +17,6 @@ public class Topic {
     {
         return name;
     }
-    public HashMap<Integer,String> getConnectionIDs()
-    {
-        return connectionIDsToSubsctiptionIDs;
-    }
 
     public void addSubscription(int connectionId, String subsctiptionID)
     {
