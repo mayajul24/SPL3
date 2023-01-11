@@ -1,6 +1,20 @@
 #include <stdlib.h>
 #include "../include/ConnectionHandler.h"
 
+int countWords(String line)
+        {
+            int count=0;
+            for(int i=0;i<line.length;i++)
+            {
+                if(line.charAt(i)==" ")
+                {
+                    count++;
+                }
+            }
+            return count+1;
+        }
+	
+
 int main(int argc, char *argv[]) {
 	// TODO: implement the STOMP client
 if (argc < 3) {
@@ -15,7 +29,7 @@ if (argc < 3) {
         std::cerr << "Cannot connect to " << host << ":" << port << std::endl;
         return 1;
     }
-	
+    
 	//From here we will see the rest of the ehco client implementation:
     while (1) {
         const short bufsize = 1024;
