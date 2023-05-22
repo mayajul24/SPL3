@@ -1,76 +1,220 @@
+#include <map>
+#include <iostream>
+#include <vector>
+#include <string>
 #include <stdlib.h>
 #include "../include/ConnectionHandler.h"
+#include <sstream>
+#include <cassert>
+#include <mutex>
+#include <thread>
+#include "../include/ReadFromKeyboard.h"
+#include "../include/protocol.h"
+#include "../include/HandleSocket.h"
+using std::string;
+using namespace std;
+using std::map;
+using std::vector;
 
-int countWords(String line)
-        {
-            int count=0;
-            for(int i=0;i<line.length;i++)
+void convertLogin(string line, ConnectionHandler& connectionHandler)
+{
+    
+    string loginMessage = "CONNECT\naccept-version:1.2\nhost:stomp.cs.bgu.ac.il\nlogin:";
+    int i = 0;
+    string user = "";
+    while (line.at(i) != ' ')
+    {
+        i++;
+    }
+    i++;
+    while (line.at(i) != ' ')
+    {
+        i++;  
+    }
+    i++;
+    while (line.at(i) != ' ')
+    {
+        user += line.at(i);
+        i++;   
+    }
+    i++;
+    
+    loginMessage += user + "\npasscode:";
+    string passcode = "";
+    while ((unsigned)i < (unsigned)line.length())
+    {
+        passcode += line.at(i);
+        i++;
+    }
+   
+    loginMessage += passcode + "\n\n" + "\0";
+    connectionHandler.getProtocol().getUserName() = user;
+            if (!connectionHandler.sendFrameAscii(loginMessage,'\0'))
             {
-                if(line.charAt(i)==" ")
-                {
-                    count++;
-                }
+              std::cout << "Disconnected. Exiting...\n"
+                        << std::endl;
             }
-            return count+1;
-        }
-	
 
-int main(int argc, char *argv[]) {
-	// TODO: implement the STOMP client
-if (argc < 3) {
-        std::cerr << "Usage: " << argv[0] << " host port" << std::endl << std::endl;
-        return -1;
+}
+
+
+string getUsername(string line)
+{
+    int i = 0;
+    string username = "";
+    while (line[i] != ' ')
+    {
+        i++;
     }
-    std::string host = argv[1];
-    short port = atoi(argv[2]);
+    i++;
+    while (line[i] != ' ')
+    {
+        i++;
+    }
+    i++;
+    while (line[i] != ' ')
+    {
+        username = username + line[i];
+        i++;
+    }
     
-    ConnectionHandler connectionHandler(host, port);
-    if (!connectionHandler.connect()) {
-        std::cerr << "Cannot connect to " << host << ":" << port << std::endl;
-        return 1;
+    return username;
+}
+string getHost(string line)
+{
+    
+    int i = 0;
+    while (line[i] != ' ')
+    {
+        i = i + 1;
+    }
+    i = i + 1;
+    string host = "";
+    while (line[i] != ':')
+    {
+        host = host + line[i];
+        i = i + 1;
     }
     
-	//From here we will see the rest of the ehco client implementation:
-    while (1) {
-        const short bufsize = 1024;
-        char buf[bufsize];
-        std::cin.getline(buf, bufsize);
-		std::string line(buf);
-		int len=line.length();
-        
-        while()
+    return host;
+}
 
-        if (!connectionHandler.sendLine(line)) {
-            std::cout << "Disconnected. Exiting...\n" << std::endl;
-            break;
-        }
-		// connectionHandler.sendLine(line) appends '\n' to the message. Therefor we send len+1 bytes.
-        std::cout << "Sent " << len+1 << " bytes to server" << std::endl;
-
- 
-        // We can use one of three options to read data from the server:
-        // 1. Read a fixed number of characters
-        // 2. Read a line (up to the newline character using the getline() buffered reader
-        // 3. Read up to the null character
-        std::string answer;
-        // Get back an answer: by using the expected number of bytes (len bytes + newline delimiter)
-        // We could also use: connectionHandler.getline(answer) and then get the answer without the newline char at the end
-        if (!connectionHandler.getLine(answer)) {
-            std::cout << "Disconnected. Exiting...\n" << std::endl;
-            break;
-        }
+string getPort(string line)
+{
         
-		len=answer.length();
-		// A C string must end with a 0 char delimiter.  When we filled the answer buffer from the socket
-		// we filled up to the \n char - we must make sure now that a 0 char is also present. So we truncate last character.
-        answer.resize(len-1);
-        std::cout << "Reply: " << answer << " " << len << " bytes " << std::endl << std::endl;
-        if (answer == "bye") {
-            std::cout << "Exiting...\n" << std::endl;
-            break;
+
+    int i = 0;
+    while (line[i] != ':')
+    {
+        i = i + 1;
+    }
+    i = i + 1;
+    string port = "";
+    while (line[i] != ' ')
+    {
+        port = port + line[i];
+        i = i+1;
+    }
+    
+    return port;
+}
+string getCommand(string line)
+{
+    bool stop = false;
+    string command = "";
+    for (int i = 0; (unsigned)i < (unsigned)line.length() && !stop; i++)
+    {
+        if (line.at(i) != ' ')
+        {
+            command = command + line.at(i);
+        }
+        else
+        {
+            stop = true;
         }
     }
+    return command;
+}
 
-	return 0;
-	//##################################################
+int countWords(string line)
+{
+    int count = 0;
+    for (int i = 0; (unsigned)i < (unsigned)line.length(); i++)
+    {
+        if (line.at(i) == ' ')
+        {
+            count++;
+        }
+    }
+    return count + 1;
+}
+bool legalFrame(int numOfWords, string command)
+{
+    if (command == "login")
+    {
+        return numOfWords == 4;
+    }
+    if (command == "join")
+    {
+        return numOfWords == 2;
+    }
+    if (command == "exit")
+    {
+        return numOfWords == 2;
+    }
+    else
+    {
+        return false;
+    }
+    // TODO: add report
+}
+int main()
+{
+     std::mutex mutex;
+
+    while (1)
+    {
+        string command ="";
+        string line ="";
+        while(command!="login")
+        {
+            const short bufsize = 1024;
+            char buf[bufsize];
+            std::cin.getline(buf, bufsize);
+            line = buf;
+            command = getCommand(line);
+        
+        }
+        
+        if (!legalFrame(countWords(line), command))
+        {
+            std::cout << "Invalid frame... Try to send again...\n"
+                      << std::endl;
+        }
+        else
+        {
+            string username = getUsername(line);
+            protocol clientProtocol = protocol(username);
+            ConnectionHandler connectionHandler(getHost(line), stoi(getPort(line)), clientProtocol);
+            
+            if (!connectionHandler.connect())
+            {
+                std::cerr << "Cannot connect to " << getHost(line) << ":" << getPort(line) << std::endl;
+                return 1;
+            }
+            else
+            {
+                convertLogin(line, connectionHandler);
+                ReadFromKeyboard readFromKeyboard(1, mutex, connectionHandler);
+                HandleSocket handleSocket(2, mutex, connectionHandler);
+                 std::thread th1(&ReadFromKeyboard::run, readFromKeyboard);
+                 std::thread th2(&HandleSocket::run, handleSocket);
+                 
+                th1.join();
+                th2.join();
+                
+            }
+        }
+        return 0;
+    }
 }

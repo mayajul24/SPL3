@@ -20,13 +20,13 @@ public class ConnectionsImpl<T> implements Connections<T>{
     }
 
     public boolean send(int connectionId, T msg){
+        
         connectionIDToConnectionHandler.get(connectionId).send(msg);
         return false;
     }
     public void send(String channel, T msg){
         Topic topic = nameToTopic.get(channel);
-        HashMap<Integer,String> connectionIds = topic.getConnectionIDsToSubsctiptionIDs();
-        for(HashMap.Entry<Integer, String> entry : connectionIds.entrySet()){
+        for(HashMap.Entry<Integer, String> entry : topic.getConnectionIDsToSubsctiptionIDs().entrySet()){
             send((int)entry.getKey(), msg);
         }
     }

@@ -7,4 +7,5 @@ class StompProtocol
 {
 private:
 public:
+
 };

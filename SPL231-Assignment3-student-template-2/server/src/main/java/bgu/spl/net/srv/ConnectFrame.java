@@ -19,16 +19,17 @@ public class ConnectFrame extends Frame {
         String error = lookForErrors(connections);
         if(error.length()==0)
         {
+            
             String username = headers.get("login");
             connections.getConnectedUsers().add(username);
             connections.getConnectionIdToConnectionHandler().put(connectionId, handler);
             connections.getConnectionIdToUsername().put(connectionId, username);
             
             connections.send(connectionId,"CONNECTED" + "\n" + "version:1.2" + "\n" + "" + "\n" + "\u0000");
-            if(headers.containsKey("receipt")){
-                String receipt = "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" +"\n"+ "\u0000";
-                connections.send(connectionId,receipt);
-            }
+            // if(headers.containsKey("receipt")){
+            //     String receipt = "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" +"\n"+ "\u0000";
+            //     connections.send(connectionId,receipt);
+            // }
             return true;
         }
         else
@@ -52,7 +53,7 @@ public class ConnectFrame extends Frame {
     }
     public boolean checkPasscode(ConnectionsImpl<String> connections){
         if(connections.getUsersToPasscode().containsKey(headers.get("login"))){
-            if(headers.get("passcode") == connections.getUsersToPasscode().get(headers.get("login")))
+            if(headers.get("passcode").equals(connections.getUsersToPasscode().get(headers.get("login"))))
             {
                  return true;
             }
@@ -74,32 +75,30 @@ public class ConnectFrame extends Frame {
         String error = "";
         if(!headers.containsKey("accept-version"))
         {
-            return createError("Frame should contain accept-version header");
+            return createError("No accept version header");
         }
         if(!headers.containsKey("host"))
         {
             return createError("Frame should contain host header");
         }
+        
+        if(!headers.containsKey("passcode"))
+        {
+            return createError("Frame should contain passcode header");
+        }
         if(!headers.containsKey("login"))
         {
             return createError("Frame should contain login header");
         }
-        if(!headers.containsKey("passcoden"))
-        {
-            return createError("Frame should contain passcode header");
-        }
         if(connections.getConnectedUsers().contains(headers.get("login"))){
             return createError("User already connected");
         }
-    
-        if(headers.get("accept-version") != "1.2"){
+        
+        if(!headers.get("accept-version").equals("1.2")){
             return createError("Incorrect frame version");
         }
-        if(headers.get("host") != "stomp.bgu.ac.il"){
+        if(!headers.get("host").equals("stomp.cs.bgu.ac.il")){
             return createError("Host name incorrect");
-        }
-        if(body != ""){
-            return createError("Frame body should be empty");
         }
         
         if(!checkPasscode(connections)){

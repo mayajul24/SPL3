@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <boost/asio.hpp>
+#include "../include/protocol.h"
 
 using boost::asio::ip::tcp;
 
@@ -12,9 +13,11 @@ private:
 	const short port_;
 	boost::asio::io_service io_service_;   // Provides core I/O functionality
 	tcp::socket socket_;
+	protocol clientProtocol;
+	
 
 public:
-	ConnectionHandler(std::string host, short port);
+	ConnectionHandler(std::string host, short port, protocol clientProtocol);
 
 	virtual ~ConnectionHandler();
 
@@ -47,5 +50,10 @@ public:
 
 	// Close down the connection properly.
 	void close();
+	protocol getProtocol();
+
+	void setToReceiptToAction(int receipt, vector<string> action);
+
+	void setGameNameToSubID(string gameName, int subID);
 
 }; //class ConnectionHandler

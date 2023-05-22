@@ -17,8 +17,9 @@ public class SendFrame extends Frame {
         String error = lookForErrors(connections, connectionId);
         if(error.length()==0)
         {
-            String topic = getTopicName(headers.get("destination"));
-            connections.send(topic, createMessageFrame(connections.getMessageID()));
+            String topic = headers.get("destination");
+            topic = topic.substring(1);
+            connections.send(topic, headers.get("message"));
             if(headers.containsKey("receipt")){
                 String receipt = "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" +"\n"+ "\u0000";
                 connections.send(connectionId, receipt);
@@ -53,7 +54,7 @@ public class SendFrame extends Frame {
         {
             return createError("Frame doesn't contain destination");
         }
-        String currentTopic = getTopicName(headers.get("destination"));
+        String currentTopic = headers.get("destination").substring(1);
         Topic topic = connections.getNameToTopic().get(currentTopic);
         if(topic!=null && !topic.getConnectionIDsToSubsctiptionIDs().containsKey("connectionId"))
         {
@@ -70,18 +71,18 @@ public class SendFrame extends Frame {
         String topic = "";
         int index = destination.length()-1; 
         char currentChar = destination.charAt(index);
-        while(currentChar != '/' && index >= 0)
+        while(index >= 0)
         {
             topic = currentChar + topic;
             index--;
             currentChar = destination.charAt(index);
         }
-        return topic;
+        return topic.substring(1);
     }
 
     public String createMessageFrame(int messageID)
     {
         return "MESSAGE"+"\n"+"subscription"+headers.get("id")+"\n"+"message-id"+messageID+"/n"+
-        "destination:/topic/"+getTopicName(headers.get("destination"))+"/n"+"/n"+body;
+        "destination:/topic/"+headers.get("destination").substring(1)+"/n"+"/n"+body;
     }
 }

@@ -30,9 +30,9 @@ public class SubscribeFrame extends Frame {
             {
                 toSubscribe.addSubscription(connectionId, headers.get("id")); 
             }
-            if(headers.containsKey("receipt") && headers.get("receipt") == "")
+            if(headers.containsKey("receipt") || headers.get("receipt").equals(""))
             {
-                String receipt = "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" +"\n"+ "\u0000";;
+                String receipt = "RECEIPT" + "\n" + "receipt-id:" + headers.get("receipt") + "\n" + "" +"\n"+ '\u0000'+'\0';
                 connections.send(connectionId,receipt);
             }
             return true;
@@ -67,15 +67,11 @@ public class SubscribeFrame extends Frame {
     }
 
     public String lookForErrors(ConnectionsImpl<String> connections){
-        if(!headers.containsKey("destination")&&headers.get("destination")=="")
+        if((!headers.containsKey("destination")) || headers.get("destination").equals(""))
         {
             return createError("Frame doesn't contain destination");
         }
-        if(!connections.getNameToTopic().containsKey(headers.get("destination")))
-        {
-            return createError("topic doesn't exist");
-        }
-        if(!headers.containsKey("id")&& headers.get("id").length() == 0)
+        if(!headers.containsKey("id")|| headers.get("id").length() == 0)
         {
             return createError("Frame doesn't contain id");
         }

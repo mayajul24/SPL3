@@ -4,6 +4,11 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <cassert>
+#include <sstream>
+
+using namespace std;
+using std::string;
 
 class Event
 {
@@ -37,6 +42,8 @@ public:
     const std::map<std::string, std::string> &get_team_a_updates() const;
     const std::map<std::string, std::string> &get_team_b_updates() const;
     const std::string &get_discription() const;
+    std::string toString(string user);
+    string toStringUpdates(std::map<string,string>);
 };
 
 // an object that holds the names of the teams and a vector of events, to be returned by the parseEventsFile function

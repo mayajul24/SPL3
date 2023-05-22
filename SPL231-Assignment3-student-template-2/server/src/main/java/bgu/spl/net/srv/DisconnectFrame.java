@@ -41,7 +41,7 @@ public class DisconnectFrame extends Frame {
     public String lookForErrors()
     {
         String error="";
-        if(!headers.containsKey("receipt") || headers.get("receipt")!="")
+        if(!headers.containsKey("receipt") || headers.get("receipt").equals(""))
         {
             return createError("frame doesn't contain receipt");
         }

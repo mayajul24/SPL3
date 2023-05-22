@@ -1,5 +1,5 @@
 #include "../include/ConnectionHandler.h"
-
+#include <thread>
 using boost::asio::ip::tcp;
 
 using std::cin;
@@ -8,8 +8,10 @@ using std::cerr;
 using std::endl;
 using std::string;
 
-ConnectionHandler::ConnectionHandler(string host, short port) : host_(host), port_(port), io_service_(),
-                                                                socket_(io_service_) {}
+ConnectionHandler::ConnectionHandler(string host, short port, protocol clientProtocol) : host_(host), port_(port), io_service_(),
+                                                                socket_(io_service_),clientProtocol(clientProtocol) {
+										
+																}
 
 ConnectionHandler::~ConnectionHandler() {
 	close();
@@ -50,11 +52,16 @@ bool ConnectionHandler::getBytes(char bytes[], unsigned int bytesToRead) {
 
 bool ConnectionHandler::sendBytes(const char bytes[], int bytesToWrite) {
 	int tmp = 0;
+	
 	boost::system::error_code error;
 	try {
 		while (!error && bytesToWrite > tmp) {
+			
+
 			tmp += socket_.write_some(boost::asio::buffer(bytes + tmp, bytesToWrite - tmp), error);
 		}
+			
+
 		if (error)
 			throw boost::system::system_error(error);
 	} catch (std::exception &e) {
@@ -65,11 +72,11 @@ bool ConnectionHandler::sendBytes(const char bytes[], int bytesToWrite) {
 }
 
 bool ConnectionHandler::getLine(std::string &line) {
-	return getFrameAscii(line, '\n');
+	return getFrameAscii(line, '\0');
 }
 
 bool ConnectionHandler::sendLine(std::string &line) {
-	return sendFrameAscii(line, '\n');
+	return sendFrameAscii(line, '\0');
 }
 
 
@@ -93,6 +100,7 @@ bool ConnectionHandler::getFrameAscii(std::string &frame, char delimiter) {
 }
 
 bool ConnectionHandler::sendFrameAscii(const std::string &frame, char delimiter) {
+	
 	bool result = sendBytes(frame.c_str(), frame.length());
 	if (!result) return false;
 	return sendBytes(&delimiter, 1);
@@ -101,8 +109,25 @@ bool ConnectionHandler::sendFrameAscii(const std::string &frame, char delimiter)
 // Close down the connection properly.
 void ConnectionHandler::close() {
 	try {
+		
 		socket_.close();
 	} catch (...) {
 		std::cout << "closing failed: connection already closed" << std::endl;
 	}
 }
+protocol ConnectionHandler::getProtocol()
+{
+	return clientProtocol;
+}
+
+
+void ConnectionHandler::setToReceiptToAction(int receipt, vector<string> action)
+{
+	clientProtocol.setReceiptToAction(receipt, action);
+}
+
+
+	void ConnectionHandler:: setGameNameToSubID(string gameName, int subID)
+	{
+		clientProtocol.setGameNameToSubID(gameName,subID);
+	}
